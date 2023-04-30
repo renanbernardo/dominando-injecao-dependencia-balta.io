@@ -2,6 +2,7 @@
 using DependencyStore.Models;
 using DependencyStore.Repositories;
 using DependencyStore.Repositories.Contracts;
+using DependencyStore.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using RestSharp;
@@ -10,11 +11,15 @@ namespace DependencyStore.Controllers;
 
 public class OrderController : ControllerBase
 {
-    private  readonly ICustomerRepository _customerRepository;
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IDeliveryFeeService _deliveryFeeService;
 
-    public OrderController(CustomerRepository customerRepository)
+    public OrderController(
+        ICustomerRepository customerRepository,
+        IDeliveryFeeService deliveryFeeService)
     {
         _customerRepository = customerRepository;
+        _deliveryFeeService = deliveryFeeService;
     }
 
     [Route("v1/orders")]
@@ -31,17 +36,7 @@ public class OrderController : ControllerBase
             });
 
         // #2 - Calcula o frete
-        decimal deliveryFee = 0;
-        var client = new RestClient("https://consultafrete.io/cep/");
-        var request = new RestRequest()
-            .AddJsonBody(new
-            {
-                zipCode
-            });
-        deliveryFee = await client.PostAsync<decimal>(request, new CancellationToken());
-        // Nunca é menos que R$ 5,00
-        if (deliveryFee < 5)
-            deliveryFee = 5;
+        var deliveryFee = await _deliveryFeeService.GetDeliveryFeeAsync(zipCode);
 
         // #3 - Calcula o total dos produtos
         decimal subTotal = 0;
