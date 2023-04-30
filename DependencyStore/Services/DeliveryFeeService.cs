@@ -7,7 +7,7 @@ public class DeliveryFeeService : IDeliveryFeeService
 {
     public async Task<decimal> GetDeliveryFeeAsync(string zipCode)
     {
-        var client = new RestClient("https://consultafrete.io/cep/");
+        var client = new RestClient("https://api.myorg.com");
         var request = new RestRequest()
             .AddJsonBody(new
             {
