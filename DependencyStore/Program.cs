@@ -1,3 +1,4 @@
+using DependencyStore;
 using DependencyStore.Repositories;
 using DependencyStore.Repositories.Contracts;
 using DependencyStore.Services;
@@ -13,6 +14,7 @@ builder.Services.AddTransient<IDeliveryFeeService, DeliveryFeeService>();
 builder.Services.AddScoped(x => new SqlConnection("CONN_STRING"));
 // Para o Entity Framework, usar o AddDbContext
 // builder.Services.AddDbContext<DependencyStoreContext>(options => options.UseSqlServer("CONN_STRING"));
+builder.Services.AddSingleton<Configuration>();
 
 builder.Services.AddControllers();
 
