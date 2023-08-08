@@ -1,15 +1,11 @@
 using DependencyStore;
-using DependencyStore.Repositories;
-using DependencyStore.Repositories.Contracts;
-using DependencyStore.Services;
-using DependencyStore.Services.Contracts;
+using DependencyStore.Extensions;
 using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
-builder.Services.AddTransient<IPromoCodeRepository, PromoCodeRepository>();
-builder.Services.AddTransient<IDeliveryFeeService, DeliveryFeeService>();
+builder.Services.AddRepositories();
+builder.Services.AddServices();
 // builder.Services.AddScoped<SqlConnection>();
 builder.Services.AddScoped(x => new SqlConnection("CONN_STRING"));
 // Para o Entity Framework, usar o AddDbContext
