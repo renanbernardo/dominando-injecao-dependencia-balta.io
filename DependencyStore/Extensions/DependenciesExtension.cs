@@ -25,4 +25,15 @@ public static class DependenciesExtension
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         services.AddScoped(x => new SqlConnection(connectionString));
     }
+
+    /// <summary>
+    /// Exemplo de ciclo de vida de serviços
+    /// </summary>
+    /// <param name="services"></param>
+    public static void AddDemoDependencyInjectionLifetimeSample(this IServiceCollection services)
+    {
+        services.AddSingleton<PrimaryService>();
+        services.AddScoped<SecondaryService>();
+        services.AddTransient<TertiaryService>();
+    }
 }
