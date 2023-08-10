@@ -17,6 +17,8 @@ builder.Services.AddDemoTryAddSample();
 
 builder.Services.AddControllers();
 
+builder.Services.AddTransient<ICustomer, CustomerService>();
+
 var app = builder.Build();
 
 app.MapGet("DependencyInjectionLifetimeSample", (
@@ -45,4 +47,14 @@ app.MapGet("TryAddSample", (IEnumerable<IService> services)
     => Results.Ok(services.Select(x => x.GetType().Name)));
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var customerService = scope
+    .ServiceProvider
+    .GetRequiredService<ICustomer>();
+
+    customerService.Get("1");
+}
+
 app.Run();
