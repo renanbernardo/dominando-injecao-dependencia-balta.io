@@ -3,6 +3,7 @@ using DependencyStore.Services;
 using DependencyStore.Repositories.Contracts;
 using DependencyStore.Repositories;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace DependencyStore.Extensions;
 
@@ -35,5 +36,23 @@ public static class DependenciesExtension
         services.AddSingleton<PrimaryService>();
         services.AddScoped<SecondaryService>();
         services.AddTransient<TertiaryService>();
+    }
+
+    /// <summary>
+    /// Exemplo de TryAdd, previne mais de uma implementação da mesma interface
+    /// </summary>
+    /// <param name="services"></param>
+    public static void AddDemoTryAddSample(this IServiceCollection services)
+    {
+        // services.TryAddTransient<IService, ServiceOne>();
+        // services.TryAddTransient<IService, ServiceOne>();
+        // services.TryAddTransient<IService, ServiceTwo>();
+
+        var descriptor = new ServiceDescriptor(typeof(IService), typeof(ServiceTwo), ServiceLifetime.Transient);
+        services.TryAddEnumerable(descriptor);
+
+        // services.TryAddEnumerable(ServiceDescriptor.Transient<IService, ServiceOne>());
+        // services.TryAddEnumerable(ServiceDescriptor.Transient<IService, ServiceOne>()); // Permite
+        // services.TryAddEnumerable(ServiceDescriptor.Transient<IService, ServiceTwo>()); // Não Permite
     }
 }

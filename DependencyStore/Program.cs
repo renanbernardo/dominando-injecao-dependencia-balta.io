@@ -1,5 +1,6 @@
 using DependencyStore.Extensions;
 using DependencyStore.Services;
+using DependencyStore.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,8 @@ builder.Services.AddServices();
 // builder.Services.AddDbContext<DependencyStoreContext>(options => options.UseSqlServer("CONN_STRING"));
 
 builder.Services.AddDemoDependencyInjectionLifetimeSample();
+
+builder.Services.AddDemoTryAddSample();
 
 builder.Services.AddControllers();
 
@@ -37,6 +40,9 @@ new
         SecondaryServiceNewInstanceId = tertiaryService.SecondaryServiceNewInstanceId
     }
 });
+
+app.MapGet("TryAddSample", (IEnumerable<IService> services) 
+    => Results.Ok(services.Select(x => x.GetType().Name)));
 
 app.MapControllers();
 app.Run();
